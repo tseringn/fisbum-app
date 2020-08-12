@@ -52,7 +52,7 @@ const renderBesties=()=>{
               <Body>
                 <Text>@{props.currentUser.username}</Text>
                 <Text note numberOfLines={1}>{props.currentUser.bio}</Text>
-                <Text>Fisbums: {props.currentUser.fisbum_count}123</Text>
+                <Text>Fisbums: {props.currentUser.fisbum_count}</Text>
               </Body>
               
          

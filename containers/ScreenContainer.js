@@ -8,7 +8,7 @@ import FriendScreen from '../screens/FriendScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { connect} from 'react-redux';
+
 
 
 
@@ -44,7 +44,7 @@ const  ScreenContainer =(props)=> {
             inactiveTintColor: 'gray',
           }}
         >
-          <Tab.Screen name="Home" component={HomeScreen} />
+          <Tab.Screen name="Home" component={HomeScreen}  />
           <Tab.Screen name="Friends" component={FriendScreen} />
           <Tab.Screen name="Profile" component={ProfileScreen} />
 

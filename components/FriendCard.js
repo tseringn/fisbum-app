@@ -1,10 +1,13 @@
 import {connect} from 'react-redux'
 import React, {useState} from 'react'
-import {View, StyleSheet, SafeAreaView,  TouchableOpacity, Modal} from 'react-native'
+import { showMessage, hideMessage } from "react-native-flash-message";
+ 
+import {View, StyleSheet, SafeAreaView, Dimensions, TouchableOpacity, Modal, Image, TouchableHighlight} from 'react-native'
 import { Container, Header, Content,SwipeRow, List, Button, Icon, ListItem, Left, Body, Right, Thumbnail, Text } from 'native-base';
 import { FlatList, } from 'react-native-gesture-handler';
 import FriendProfile from './FriendProfile';
 
+import {setCurrentUserAction} from '../actions'
 
 
 
@@ -17,40 +20,91 @@ const FriendCard=props=>{
       return  props.friends.find(f=>f.my_friend_id==id).friendship_score
     }
 
+  const  fisbumHandler=(frd)=>{
+  
+        if(props.currentUser.fisbumings.find(fs=>fs.id==frd.id)){
+            showMessage({
+                message: `You already fisbumed ${frd.first_name}`,
+                type: "info",
+              });  
+        } else{
+            fetch('http://localhost:3000/api/v1/fisbums',{
+                method: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    fisbumer_id: props.currentUser.id,
+                    fisbuming_id: frd.id
+                })
+            })
+            .then(res=>res.json())
+            .then(res=>{
+                props.setCurrentUser(res)
+                showMessage({
+                    message: `Fisbumed ${frd.first_name}`,
+                    type: "success",
+                     icon: "success",
+                   
+                  }); 
+            })
+            .catch(error=>alert(error))
+        }  
+    }
 
 
-    const Item = ({ item, onPress}) => (
-                        <View>
+
+    const Item = ({ item, onPress, onLongPress}) => {
+        const findFriend=()=>{
+            // console.log('this is from find friend an score is : ', props.friends.find(f=>f.my_friend_id==id).friendship_score)
+          return  props.friends.find(f=>f.my_friend_id==item.item.id).friendship_score
+        }
+    return(
                             
-                        <List>
-                            <ListItem>
-                                <View style={styles.listItemView}>
-                                
-                                
-                                    <Thumbnail source={{uri: `${item.item.img_url}`}}/>
-                                    <View style={styles.nameView}>
-                                    
-                                        <TouchableOpacity onPress={onPress}>
-                                            <Text style={styles.nameText}>
-                                                    {item.item.first_name} 
-                                            </Text>
-                                            <Text note style={styles.nameText} >
-                                                    @{item.item.username} 
-                                            </Text>
-                                        </TouchableOpacity>
+                    <List>
+                         <ListItem>
+                             <TouchableOpacity onLongPress={onLongPress}>
+                            <View style={styles.listItemView}>
+
+                                    <View style={styles.profilePicView}>
+                                        <Thumbnail 
+                                        style={{marginRight: 0}}
+                                        source={{uri: `${item.item.img_url}`}}/>
+                                    </View>
+                                <View style={styles.nameScoreView}>
+                                     <View style={styles.nameView}>
+                                        
+                                            <TouchableOpacity onPress={onPress}>
+                                                <Text style={styles.nameText}>
+                                                        {item.item.first_name} 
+                                                </Text>
+                                                <Text note style={styles.nameText} >
+                                                        @{item.item.username} 
+                                                </Text>
+                                            </TouchableOpacity>
                                     </View>
                                     <View style={styles.fisbum}>
-                                        <Text>
-                                            {findFriend(item.item.id)?'hi!':findFriend(item.item.id)}
+                                            
+                                        <Image source={require(`../assets/icons8-bronze-ore-48.png`)}
+                                        style={{height: 25, width: 25}}
+                                            />
+                                        <Text note style={{color: 'brown'}}>
+                                            Bronze
                                         </Text>
                                     </View>
-                                </View>  
-                            </ListItem> 
-                        </List>
+                                </View>
+                            </View> 
+                            </TouchableOpacity> 
+                        </ListItem> 
+                    </List>
+                          
+
                             
                             
-                    </View>
+                    
       );
+    }
 
     const renderModal=friend=>{
         return(
@@ -85,6 +139,7 @@ const FriendCard=props=>{
                         <Button
                         iconLeft small transparent
                         onPress={()=>setModalToggle(false)}
+                        style={{marginTop: 5}}
                         >
                             <Icon name='arrow-back' />
                             <Text>
@@ -92,7 +147,7 @@ const FriendCard=props=>{
                             </Text>
                         </Button>
                        
-                        <FriendProfile {...friend}/>
+                        <FriendProfile {...friend} setModalToggle={setModalToggle}/>
                    
                         </View>
                      
@@ -112,6 +167,7 @@ const FriendCard=props=>{
        <Item
        item={item}
        onPress={() => setModalSelectedItemState(item.item)}
+       onLongPress={()=>fisbumHandler(item.item)}
        />
         )
     }
@@ -136,8 +192,14 @@ const FriendCard=props=>{
 
 const msp=state=>{
     return {
+        currentUser: state.currentUser,
        friends: state.currentUser.friends,
        my_friends: state.currentUser.my_friends
+    }
+}
+const mdp=dispatch=>{
+    return{
+        setCurrentUser: (updatedCurrentUser)=> dispatch(setCurrentUserAction(updatedCurrentUser)),
     }
 }
 
@@ -148,15 +210,18 @@ header: {
 listItemView:{
     flexDirection: 'row', 
     flex: 1,
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    
+    
+    
     
 },
 nameView: {
-    alignItems: 'center',
-    marginLeft: '4%'
+    marginLeft: "4%"
+    
 },
 nameText: {
-    textAlign:'left' 
+    textAlign:'left',
 }, 
 fisbum: {
     shadowOffset: {
@@ -164,10 +229,20 @@ fisbum: {
         height: 2
     }, 
     shadowColor: 'black',
-    shadowRadius: 12
+    shadowRadius: 12,
+    
+},
+profilePicView: {
+    maxWidth: '50%'
+
+},
+nameScoreView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: Dimensions.get('window').width*.75
 }
 
 })
 
-export default connect(msp)(FriendCard) 
+export default connect(msp, mdp)(FriendCard) 
 
