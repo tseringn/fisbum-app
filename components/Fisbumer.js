@@ -44,6 +44,17 @@ const Fisbumer=props=>{
              :{fisbumer_id: props.currentUser.id, fisbuming_id: props.id}
     }
 
+    const imgUrl=()=>{
+        let score=props.currentUser.friends.find(f=>f.my_friend_id==props.id).friendship_score
+        switch(score){
+            case score<=1000: return  <Image style={{height: 20, width: 20}} source={require('../assets/icons8-bronze-ore-48.png')}/>
+            case score<=5000: return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-silver-ore-48.png')}/>
+            case score<=10000: return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-gold-ore-48.png')}/>
+            case score>=10000: return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-diamond-48.png')}/>
+            default: return <Image source={require('../assets/icons8-bronze-ore-48.png')}/> 
+        }
+    }
+
 
     const [fisbum, setFisbum]=useState(null)
    
@@ -131,7 +142,7 @@ const Fisbumer=props=>{
                             <View>
                                 <Text>{props.first_name}</Text>
                                 <Text note numberOfLines={3}> {props.bio}</Text>
-                                <Text note >Count!{props.fisbum_count}</Text>
+                                <Text note >{imgUrl()}</Text>
                                 <Text note >Yeah! {props.fisbum_count}</Text>
                                 
                             </View>
@@ -162,7 +173,8 @@ const Fisbumer=props=>{
 
 const msp=state=>{
     return{
-        currentUser: state.currentUser
+        currentUser: state.currentUser,
+
     }
     
 }

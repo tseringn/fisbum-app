@@ -16,7 +16,7 @@ export default function App() {
   return (
     <Provider store={store}>
         <Fisbum/>
-        <FlashMessage position="center"  duration={1000}/>
+        <FlashMessage position="center"  duration={1800}/>
     </Provider>
   );
 }

@@ -8,6 +8,7 @@ import { FlatList, } from 'react-native-gesture-handler';
 import FriendProfile from './FriendProfile';
 
 import {setCurrentUserAction} from '../actions'
+import FriendshipLevel from './FriendshipLevel';
 
 
 
@@ -15,9 +16,19 @@ const FriendCard=props=>{
     const [selectedItem, setSelectedItem ]=useState(null)
     const [modalToggle, setModalToggle]=useState(false)
     // console.log(props.my_friends, 'this is my friends from FriendCard')
-    const findFriend=id=>{
-        // console.log('this is from find friend an score is : ', props.friends.find(f=>f.my_friend_id==id).friendship_score)
-      return  props.friends.find(f=>f.my_friend_id==id).friendship_score
+    // const findFriend=id=>{
+    //     // console.log('this is from find friend an score is : ', props.friends.find(f=>f.my_friend_id==id).friendship_score)
+    //   return  props.friends.find(f=>f.my_friend_id==id).friendship_score
+    // }
+    const imgUrl=(id)=>{
+        let score=props.friends.find(f=>f.my_friend_id==id).friendship_score
+        switch(score){
+            case score<=1000: return  <Image style={{height: 20, width: 20}} source={require('../assets/icons8-bronze-ore-48.png')}/>
+            case score<=5000: return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-silver-ore-48.png')}/>
+            case score<=10000: return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-gold-ore-48.png')}/>
+            case score>=10000: return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-diamond-48.png')}/>
+            default: return <Image source={require('../assets/icons8-bronze-ore-48.png')}/> 
+        }
     }
 
   const  fisbumHandler=(frd)=>{
@@ -55,11 +66,8 @@ const FriendCard=props=>{
 
 
 
-    const Item = ({ item, onPress, onLongPress}) => {
-        const findFriend=()=>{
-            // console.log('this is from find friend an score is : ', props.friends.find(f=>f.my_friend_id==id).friendship_score)
-          return  props.friends.find(f=>f.my_friend_id==item.item.id).friendship_score
-        }
+    const Item = ({ item, onPress, onLongPress, level}) => {
+        
     return(
                             
                     <List>
@@ -85,13 +93,7 @@ const FriendCard=props=>{
                                             </TouchableOpacity>
                                     </View>
                                     <View style={styles.fisbum}>
-                                            
-                                        <Image source={require(`../assets/icons8-bronze-ore-48.png`)}
-                                        style={{height: 25, width: 25}}
-                                            />
-                                        <Text note style={{color: 'brown'}}>
-                                            Bronze
-                                        </Text>
+                                            {level()}
                                     </View>
                                 </View>
                             </View> 
@@ -168,6 +170,7 @@ const FriendCard=props=>{
        item={item}
        onPress={() => setModalSelectedItemState(item.item)}
        onLongPress={()=>fisbumHandler(item.item)}
+       level={()=>imgUrl(item.item.id)}
        />
         )
     }
