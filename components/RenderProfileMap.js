@@ -1,11 +1,11 @@
 import React from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Image} from 'react-native';
 import {connect} from 'react-redux'
 import { Marker } from 'react-native-svg';
 import { Thumbnail } from 'native-base';
 const RenderMap=props=> {
- const friend=props.friends.find(f=>f.id==props.id)
+ const frds=props.friends.filter(f=>!f.private)
 
  const getTimePassed=(updatedTime)=>{
     let milliseconds=Date.now() - new Date(updatedTime)
@@ -30,28 +30,37 @@ const RenderMap=props=> {
      return timePassed
  }
 
+ const renderMarker=(user)=>{
+
+    return(
+    <MapView.Marker
+    key={user.id}
+    coordinate={{latitude: parseFloat(user.latitude),
+    longitude: parseFloat(user.longitude) }}
+    title={`${user.first_name}'s last location`}
+    description={`${getTimePassed(user.updated_at)} ago`}
+    style={{width: 30, height: 20}}
+    resizeMode='contain'
+ >
+     <View style={styles.imageView}>
+         <Thumbnail source={{uri: `${user.img_url}`}}/>
+     </View>
+
+    
+ </MapView.Marker>
+ )
+}
     return (
       <View style={styles.container}>
         <MapView style={styles.mapStyle}
         initialRegion={{
-            latitude: parseFloat(friend.latitude),
-            longitude: parseFloat(friend.longitude),
+            latitude: parseFloat(props.currentUser.latitude),
+            longitude: parseFloat(props.currentUser.longitude),
             latitudeDelta: 0.000922,
             longitudeDelta: 0.00021,
         }}>
-            <MapView.Marker
-           
-            coordinate={{latitude: parseFloat(friend.latitude),
-            longitude: parseFloat(friend.longitude) }}
-            
-            title={`${friend.first_name}'s location`}
-            description={`${getTimePassed(friend.updated_at)} ago`}
-         >
-           <View style={styles.imageView}>
-             <Thumbnail source={{uri: `${friend.img_url}`}}/>
-           </View>
-           
-           </MapView.Marker>
+            {renderMarker(props.currentUser)}
+            {frds.map(f=> renderMarker(f))}
         </MapView>
       </View>
     );
@@ -67,13 +76,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   mapStyle: {
-    width: '85%',
+    width: '95%',
     height: 500,
+    shadowColor: 'rgb(16,222,222)',
+    shadowOffset: {
+        with: 6, 
+        height:6
+    },
+    shadowRadius: 6,
+    shadowOpacity: 1
   },
   imageView: {
     shadowColor: 'rgb(162,2,222)',
     textShadowOffset: {
-        with: 3, 
+        with: 0, 
         height:6
     },
     shadowRadius: 6,
@@ -84,7 +100,8 @@ const styles = StyleSheet.create({
 
 const msp=state=>{
     return{
-        friends: state.currentUser.my_friends
+        friends: state.currentUser.my_friends,
+        currentUser: state.currentUser
     }
 }
 

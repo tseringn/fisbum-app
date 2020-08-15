@@ -8,7 +8,9 @@ const BestieCard=props=>{
                 <Text>
                     {props.first_name}
                 </Text>
-                <Thumbnail source={{uri: `${props.img_url}`}}/>
+               <View style={styles.bestieView}>
+                   <Thumbnail source={{uri: `${props.img_url}`}}/>
+                </View> 
            
         </View>
        
@@ -17,9 +19,13 @@ const BestieCard=props=>{
 
 const styles=StyleSheet.create({
     bestieView: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        
+        shadowColor: 'rgb(0,234,222)',
+        textShadowOffset: {
+            with: 3, 
+            height:3
+        },
+        shadowRadius: 2,
+        shadowOpacity: 1
 
     }
 })

@@ -8,7 +8,7 @@ import { FlatList, } from 'react-native-gesture-handler';
 import FriendProfile from './FriendProfile';
 
 import {setCurrentUserAction} from '../actions'
-import FriendshipLevel from './FriendshipLevel';
+
 
 
 
@@ -22,13 +22,15 @@ const FriendCard=props=>{
     // }
     const imgUrl=(id)=>{
         let score=props.friends.find(f=>f.my_friend_id==id).friendship_score
-        switch(score){
-            case score<=1000: return  <Image style={{height: 20, width: 20}} source={require('../assets/icons8-bronze-ore-48.png')}/>
-            case score<=5000: return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-silver-ore-48.png')}/>
-            case score<=10000: return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-gold-ore-48.png')}/>
-            case score>=10000: return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-diamond-48.png')}/>
-            default: return <Image source={require('../assets/icons8-bronze-ore-48.png')}/> 
-        }
+        if(score<100){
+            return  <Image style={{height: 30, width: 30}} source={require('../assets/icons8-bronze-ore-48.png')}/>
+        } else if(score<1000){
+          return  <Image style={{height: 30, width: 30}} source={require('../assets/icons8-silver-ore-48.png')}/>
+        } else if(score<5000){
+            return <Image style={{height: 30, width: 30}} source={require('../assets/icons8-gold-ore-48.png')}/>
+        }else if(score<10000){
+            return <Image style={{height: 30, width: 30}} source={require('../assets/icons8-diamond-48.png')}/>
+        } else return <Image style={{height: 30, width: 30}} source={require('../assets/icons8-bronze-ore-48.png')}/> 
     }
 
   const  fisbumHandler=(frd)=>{

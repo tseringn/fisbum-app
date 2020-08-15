@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {connect} from 'react-redux'
-import {View, StyleSheet} from 'react-native'
+import {View, StyleSheet, Modal, Dimensions} from 'react-native'
 import BestieCard from '../components/BestieCard'
 import QRCode from 'react-native-qrcode-svg';
 import { 
@@ -16,12 +16,13 @@ import {
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import DisplayImage from '../components/DisplayImage';
 import { setImgModalToggleAction } from '../actions';
-
+import RenderProfileMap from '../components/RenderProfileMap';
+import EditProfile from '../components/EditProfile'
 
 
 const ProfileScreen=(props)=>{
 
-
+const [modalSwitch, setModalSwitch]=useState(false)
 
 
 const renderBesties=()=>{
@@ -44,8 +45,12 @@ const renderBesties=()=>{
 const generateQrCode=()=>{
     return(
         <QRCode
-        value={`http://localhost:3000/api/v1/users/${props.id}`}
+        value={`http://0.0.0.0:3000/api/v1/users/${props.id}`}
         size={40}
+        logo={props.currentUser.img_url}
+        logoBorderRadius={'15%'}
+        logoBackgroundColor={'blue'}
+      
       />
     )
 }
@@ -74,27 +79,46 @@ const generateQrCode=()=>{
                             <TouchableNativeFeedback onPress={props.setModalToggle }>
                                 <Icon name='open'/>
                             </TouchableNativeFeedback>
-                            {props.modalToggle&&<DisplayImage type='qr' modal={true} id={props.id}/>}
+                            {props.modalToggle&&<DisplayImage img={props.currentUser.img_url} type='qr' modal={true} id={props.currentUser.id}/>}
                         </View>
+                        <Modal
+                        visible={modalSwitch}
+                        animated='slide'
+                        >
+                            <View style={styles.editProfileModalView}>
+                                <View style={styles.modalContentView}>
+                            <Button transparent onPress={()=>setModalSwitch(false)}>
+                                <Icon name='close' style={{fontSize: 30}}/>
+                            </Button>
+                            <EditProfile/>
+                            </View>
+                            </View>
+                        </Modal>
             </View>
          
            
              
             
             <View style={styles.editButton}>
-                <Button bordered block>
+                <Button bordered block onPress={()=>setModalSwitch(true)}>
                     <Text>Edit Profile</Text>
                 </Button>
             </View>
+            <View style={{alignItems: 'center', backgroundColor: 'rgba(0,234,222, .08)',}}>
+                <Text note>Besties</Text>
             
             <View style={styles.bestieView}>
                 {renderBesties()} 
-                </View>
-                 
-        <Text>
-            status:
-            {props.currentUser.status}
+            </View>
+            
+        <View style={styles.statusView}>
+        <Text >
+         status:
         </Text>
+        <Text>{props.currentUser.status}</Text>
+        </View>
+        </View> 
+        <RenderProfileMap/>
         </Content>
     
       
@@ -133,7 +157,12 @@ const styles=StyleSheet.create({
     bestieView: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginVertical: 10
+        marginVertical: 10,
+        borderRadius: 5,
+        width: Dimensions.get('window').width*.98,
+        marginBottom: -10,
+        paddingBottom: 10
+       
         
 
     },
@@ -144,6 +173,24 @@ const styles=StyleSheet.create({
         backgroundColor: "rgba(186,98,0,.05)",
 
         
+    },
+    editProfileModalView: {
+       flex: 1,
+       justifyContent: 'center',
+       
+        height: Dimensions.get('window').height
+        
+      
+    },
+    modalContentView: {
+        backgroundColor: 'white',
+        height: Dimensions.get('window').height*.9,
+       
+    },
+    statusView: {
+     alignSelf: 'flex-start',
+     marginLeft: '5%',
+     marginVertical: '10%'
     }
 })
 

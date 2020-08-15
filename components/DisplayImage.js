@@ -1,17 +1,41 @@
 import React, { useState } from 'react'
-import {Dimensions, View, Modal, Image, StyleSheet} from 'react-native'
-import {  Button,  List, ListItem, Thumbnail, Text, Container,  Icon } from 'native-base'; 
+import {Dimensions,  Share, View, Modal, Image, StyleSheet} from 'react-native'
+import {  Button,  List, ListItem, Thumbnail, Text, Container,  Icon , Fab} from 'native-base'; 
 import QRCode from 'react-native-qrcode-svg';
 import {connect} from 'react-redux'
 import { setImgModalToggleAction } from '../actions';
 const DisplayImage=props=>{
+    const [fabToggle, setFabToggle]=useState(false)
+    const  onShare = async () => {
+        try {
+          const result = await Share.share({
+            message: 'Scan my Qr-Code to connect me!',
+            url: props.img
+          });
     
-    
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      };
     const generateQrCode=()=>{
+        const base64=props.img
         return(
             <QRCode
             value={`http://localhost:3000/api/v1/users/${props.id}`}
-            size={400}
+            size={Dimensions.get('window').width*.95}
+            logo={base64}
+            logoBorderRadius={10}
+            logoBackgroundColor={'blue'}
+            logoMargin={3}
           />
         )
     }
@@ -36,7 +60,30 @@ const DisplayImage=props=>{
                     <View style={styles.imageView}>
                     {props.type==='qr'?generateQrCode():getImage()}
                     </View>
+                   
                 </View>
+                <Fab
+                        active={fabToggle}
+                        direction="up"
+                        containerStyle={{ }}
+                        style={{ backgroundColor: '#50a7FF' }}
+                        position="bottomRight"
+                        onPress={() => setFabToggle(!fabToggle)}>
+                        <Icon name="share" />
+                        <Button   onPress={onShare} title="Others" >
+                        <Icon name='share'/>
+                        </Button>
+                        <Button style={{ backgroundColor: '#34A34F' }}>
+                        <Icon name="logo-whatsapp" />
+                        </Button>
+                        <Button style={{ backgroundColor: '#3B5998' }}>
+                        <Icon name="logo-facebook" />
+                        </Button>
+                        <Button disabled style={{ backgroundColor: '#DD5144' }}>
+                        <Icon name="mail" />
+                        </Button>
+                        
+                    </Fab>
             </Container>
             
         </Modal>
@@ -53,10 +100,14 @@ const DisplayImage=props=>{
      },
      modalView: {
          
-         height: 400,
-         width: 400
+         justifyContent: 'center',
+         alignItems: 'center',
+         backgroundColor: 'white', 
+         height: 430,
+         width: Dimensions.get('window').width
      },
      imageView: {
+         marginVertical: 10,
          height: 400, 
          width: 400,
          flex: 1,
@@ -76,3 +127,6 @@ const DisplayImage=props=>{
  }
 
 export default connect(msp, mdp)(DisplayImage)
+
+
+

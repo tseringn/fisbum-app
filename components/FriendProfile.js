@@ -1,12 +1,14 @@
 import React from 'react'
 import { MapView} from 'react-native-maps'
-import {Modal, View, StyleSheet, ScrollView} from 'react-native' 
+import {Image, View, StyleSheet, ScrollView} from 'react-native' 
 import {Icon, Container, Text, Thumbnail, Button} from 'native-base'
 import QRCode from 'react-native-qrcode-svg';
 import {connect} from 'react-redux'
 import RenderMap from './RenderMap'
 import * as Linking from 'expo-linking';
 import {unfriendAction, removeRequestAction} from '../actions'
+import { TouchableNativeFeedback } from 'react-native-gesture-handler';
+import DisplayImage from './DisplayImage';
 
 const FriendProfile=props=>{
     const friend= props.friends.find(f=>f.my_friend_id==props.id)
@@ -44,6 +46,19 @@ const FriendProfile=props=>{
     
         props.setModalToggle(false)
     }
+    const imgUrl=()=>{
+        let score=props.friends.find(f=>f.my_friend_id==props.id).friendship_score
+
+        if(score<100){
+            return  <Image style={{height: 30, width: 30}} source={require('../assets/icons8-bronze-ore-48.png')}/>
+        } else if(score<1000){
+          return  <Image style={{height: 30, width: 30}} source={require('../assets/icons8-silver-ore-48.png')}/>
+        } else if(score<5000){
+            return <Image style={{height: 30, width: 30}} source={require('../assets/icons8-gold-ore-48.png')}/>
+        }else if(score<10000){
+            return <Image style={{height: 30, width: 30}} source={require('../assets/icons8-diamond-48.png')}/>
+        } else return <Image style={{height: 30, width: 30}} source={require('../assets/icons8-bronze-ore-48.png')}/> 
+    }
 
 
     const generateQrCode=()=>{
@@ -51,13 +66,20 @@ const FriendProfile=props=>{
             <QRCode
             value={`http://localhost:3000/api/v1/users/${props.id}`}
             size={340}
+            logo={props.img_url}
+            logoBorderRadius={10}
+            logoBackgroundColor={'blue'}
+            logoMargin={3}
           />
         )
     }
     return(
        <ScrollView>
            <View style={styles.qrView}>
-           {generateQrCode()}
+               <TouchableNativeFeedback onPress={()=><DisplayImage type='qr' img={props.img_url} modal={true} id={props.id}/>}>
+               {generateQrCode()}
+               </TouchableNativeFeedback>
+           
            </View>
             <View style={styles.nameView}>
                   
@@ -73,7 +95,7 @@ const FriendProfile=props=>{
                         {props.bio} 
                     </Text>
                     <Text>
-                    Level {friend.friendship_score}
+                    {props.fisbum_count}🤜
                      </Text>
                     </View>
             </View>
@@ -97,6 +119,7 @@ const FriendProfile=props=>{
                      <Text> Unfriend</Text>
                 </Button>
             </View>
+            {imgUrl()}
            <RenderMap id={props.id}/>
         </ScrollView>
     )
