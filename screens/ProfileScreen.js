@@ -88,7 +88,8 @@ const generateQrCode=()=>{
                             <View style={styles.editProfileModalView}>
                                 <View style={styles.modalContentView}>
                             <Button transparent onPress={()=>setModalSwitch(false)}>
-                                <Icon name='close' style={{fontSize: 30}}/>
+                                <Icon name='arrow-back' style={{fontSize: 30}}/>
+                                <Text>back</Text>
                             </Button>
                             <EditProfile/>
                             </View>

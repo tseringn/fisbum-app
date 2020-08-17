@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
-import {View, TextInput,StyleSheet} from 'react-native'
+import {View, TextInput,StyleSheet, Modal} from 'react-native'
 import { Container, Header, Content, Form, Item, Input, Label, Button, Text } from 'native-base';
 import { connect} from 'react-redux';
-import {setCurrentUserAction} from '../actions'
+import {setCurrentUserAction, setSignUpModalToggleAction} from '../actions'
+import SignUp from '../components/SignUp';
 
 const AuthScreen=props=>{
     const [user, setUser]=useState({
         username: '',
         password: ''
     })
+   
    
 
 
@@ -66,7 +68,7 @@ const AuthScreen=props=>{
                         </Button>
                     </View>
                     <View style={styles.buttonGroup}>
-                        <Button transparent>
+                        <Button transparent onPress={props.setNewUserModalToggle}>
                             <Text>new user? sign up</Text>
                         </Button>
                         <Button transparent>
@@ -74,6 +76,8 @@ const AuthScreen=props=>{
                         </Button>
                     </View>
                     
+                        {props.newUser && <SignUp/>}
+                   
                 </Form>
                 </Content>
             </Container>
@@ -105,12 +109,18 @@ const styles=StyleSheet.create({
     }
     
 })
+const msp=state=>{
+    return{
+        newUser: state.signUpModalToggle
+    }
+}
 
 const mdp = dispatch => {
     return {
-      setUser: (person) => dispatch(setCurrentUserAction(person))
+      setUser: (person) => dispatch(setCurrentUserAction(person)),
+      setNewUserModalToggle: ()=>dispatch(setSignUpModalToggleAction())
     }
   }
 
 
-export default connect(null, mdp )(AuthScreen)
+export default connect(msp, mdp )(AuthScreen)
