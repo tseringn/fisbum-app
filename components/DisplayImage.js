@@ -30,7 +30,7 @@ const DisplayImage=props=>{
         const base64=props.img
         return(
             <QRCode
-            value={`http://localhost:3000/api/v1/users/${props.id}`}
+            value={`http://fisbum-backend.herokuapp.com/api/v1/users/${props.id}`}
             size={Dimensions.get('window').width*.95}
             logo={base64}
             logoBorderRadius={10}

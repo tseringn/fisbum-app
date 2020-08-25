@@ -30,7 +30,7 @@ const FriendScreen=(props)=>{
 
     const  searchHandler=()=>{
        if(searchKey!==''){
-        fetch(`http://localhost:3000/api/v1/users/search/${searchKey}`)
+        fetch(`http://fisbum-backend.herokuapp.com/api/v1/users/search/${searchKey}`)
         .then(res=>res.json())
         .then(result=>{
             
@@ -84,12 +84,12 @@ const FriendScreen=(props)=>{
                                 
                             }}>
                                 
-                         
-                        <Icon
-                        name='close'
-                        style={styles.icon}
-                        onPress={()=>setModalToggle(false)}
-                        />
+                        <Button transparent onPress={()=>setModalToggle(false)}>
+                            <Icon
+                            name='close'
+                            style={styles.icon}
+                            />
+                        </Button>
                         <ScrollView>
                         {renderResultCard()}
                         </ScrollView>
@@ -140,7 +140,7 @@ const styles=StyleSheet.create({
         maxHeight: '80% '
     },
     icon: {
-        padding: '4%'
+        fontSize: 35
     }
 })
  const msp=state=>{

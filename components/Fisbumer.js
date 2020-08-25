@@ -64,7 +64,7 @@ const Fisbumer=props=>{
 
         const getFisbum=()=>{
 
-            fetch('http://localhost:3000/api/v1/fisbums/get_fisbum',{
+            fetch('http://fisbum-backend.herokuapp.com/api/v1/fisbums/get_fisbum',{
                 method: "POST",
                 headers: {
                     'accept': 'application/json',
@@ -110,7 +110,7 @@ const Fisbumer=props=>{
                     type: "info",
                   });  
             } else{
-                fetch('http://localhost:3000/api/v1/fisbums',{
+                fetch('http://fisbum-backend.herokuapp.com/api/v1/fisbums',{
                     method: 'POST',
                     headers: {
                         'accept': 'application/json',
@@ -145,7 +145,7 @@ const Fisbumer=props=>{
                                 <Text>{props.first_name}</Text>
                                 <Text note numberOfLines={3}> {props.bio}</Text>
                                 <Text note >{imgUrl()}</Text>
-                                <Text note >Yeah! {props.fisbum_count}</Text>
+                                <Text note >{props.fisbum_count} 🤜</Text>
                                 
                             </View>
                             <View style={styles.profilePic} >

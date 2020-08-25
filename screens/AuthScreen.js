@@ -28,7 +28,7 @@ const AuthScreen=props=>{
     }
     const loginHandler=()=>{
         console.log(props.setUser)
-        fetch(`http://127.0.0.1:3000/api/v1/users/search_user/${user.username}`)
+        fetch(`http://fisbum-backend.herokuapp.com/api/v1/users/search_user/${user.username}`)
         .then(res=>res.json())
         .then(person=>{
             if(person.message!==''){

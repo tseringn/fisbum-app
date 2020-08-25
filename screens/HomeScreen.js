@@ -1,21 +1,57 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {View, StyleSheet, ScrollView, Dimensions, Modal} from 'react-native'
 import {connect} from 'react-redux'
-import { Container, Form, Item, Label, Input, Header, Content,SwipeRow, List, Button, Icon, ListItem, Left, Body, Right, Thumbnail, Text } from 'native-base';
+import { Container, Form, Item, Label, Input, Header, Content,SwipeRow, List, Button, Icon, ListItem, Left, Body, Right, Thumbnail, Text, Spinner } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Fisbuming from '../components/DisplayImage'
 import Fisbumer from '../components/Fisbumer'
 import { setCurrentUserAction } from '../actions';
 import {showMessage} from 'react-native-flash-message'
-
+import * as Location from 'expo-location';
 
 
 const HomeScreen=(props)=>{
     const [modalToggle, setModalToggle]=useState(false)
     const [status, setStatus]=useState('') 
+    const [isSpinning, setIsSpinning]=useState(false)
+
+
+    const postLocation=(location)=>{
+        fetch(`http://fisbum-backend.herokuapp.com/api/v1/users/${props.currentUser.id}`,{
+            method: 'PATCH',
+            headers:{
+                accept: 'application/json',
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude
+            })
+        })
+        .then(res=>res.json())
+        .then(user=>{
+            props.setCurrentUser(user)
+        })
+        .catch(error=>alert(error))
+    }
+  
+    useEffect(() => {
+      (async () => {
+        let { status } = await Location.requestPermissionsAsync();
+        if (status !== 'granted') {
+          setErrorMsg('Permission to access location was denied');
+        }
+  
+        let location = await Location.getCurrentPositionAsync({});
+        postLocation(location)
+        
+      })();
+   } ,[]);
+
+  
 
   const   statusUpdateHandler=()=>{
-        fetch(`http://127.0.0.1:3000/api/v1/users/${props.currentUser.id}`,{
+        fetch(`http://fisbum-backend.herokuapp.com/api/v1/users/${props.currentUser.id}`,{
             method: 'PATCH',
             headers: {
                 'accept': 'application/json',
@@ -38,6 +74,17 @@ const HomeScreen=(props)=>{
             setModalToggle(false)
         })
         .catch(error=> alert(error))
+    }
+    const refreshHandler=()=>{
+        setIsSpinning(true)
+        fetch(`http://fisbum-backend.herokuapp.com/api/v1/users/${props.currentUser.id}`)
+        .then(res=>res.json())
+        .then(person=>{
+            props.setCurrentUser(person)
+            setIsSpinning(false)  
+        })
+        .catch(error=> window.alert(`error is ${error}`))
+
     }
 
     const renderModal=()=>{
@@ -106,13 +153,14 @@ const HomeScreen=(props)=>{
                 {renderModal()}
        
 
-        <ScrollView style={styles.scrollView}>
+        <ScrollView style={styles.scrollView} onScrollEndDrag={refreshHandler}>
           
             <View>
+            {isSpinning && <Spinner color='blue'/>}
               <View style={styles.textView}>
               <Text style={{color: 'white'}}>Friends waiting for your fisbum</Text>
              </View> 
-                {props.fisbumers.map(fis=><Fisbumer key={fis.id} bgColor={'rgba(0,200,0,.05)'} {...fis}/>)}
+                {props.fisbumers && props.fisbumers.map(fis=><Fisbumer key={fis.id} bgColor={'rgba(0,200,0,.05)'} {...fis}/>)}
             </View>
             <View>
             <View style={{...styles.textView, backgroundColor: 'rgba(0,0,200,.05)'}}>

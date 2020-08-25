@@ -41,7 +41,7 @@ const FriendCard=props=>{
                 type: "info",
               });  
         } else{
-            fetch('http://localhost:3000/api/v1/fisbums',{
+            fetch('http://fisbum-backend.herokuapp.com/api/v1/fisbums',{
                 method: 'POST',
                 headers: {
                     'accept': 'application/json',

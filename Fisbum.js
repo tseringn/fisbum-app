@@ -1,10 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
+
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { connect} from 'react-redux';
 import ScreenContainer from './containers/ScreenContainer'
 import AuthScreen from './screens/AuthScreen'
+import { setCurrentUserAction } from './actions';
 
 
 
@@ -23,9 +22,9 @@ const mapStateToProps = state => { //msp
     }
   }
   
-//   const mapDispatchToProps = dispatch => { //mdp
-//     return {
-    
-//     }
-//   }
-export default connect(mapStateToProps)(Fisbum)
+  const mapDispatchToProps = dispatch => { //mdp
+    return {
+    setUser: (user)=>dispatch(setCurrentUserAction(user))
+    }
+  }
+export default connect(mapStateToProps, mapDispatchToProps)(Fisbum)

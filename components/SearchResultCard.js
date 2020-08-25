@@ -28,16 +28,16 @@ const friend=props.friends.find(f=> f.my_friend_id==props.id)
     }
 
     const unfriendHandler=()=>{
-        fetch(`http://localhost:3000/api/v1/friends/${friend.id}`, {method: "DELETE"})
+        fetch(`http://fisbum-backend.herokuapp.com/api/v1/friends/${friend.id}`, {method: "DELETE"})
          .catch(error=>alert(error))
         
         
-        fetch(`http://localhost:3000/api/v1/users/${props.id}`)
+        fetch(`http://fisbum-backend.herokuapp.com/api/v1/users/${props.id}`)
         .then(res=>res.json())
         .then(user=>{
             const frd=user.friends.find(f=> f.my_friend_id==props.currentUser.id)
 
-            fetch(`http://localhost:3000/api/v1/friends/${frd.id}`, {method: "DELETE"})
+            fetch(`http://fisbum-backend.herokuapp.com/api/v1/friends/${frd.id}`, {method: "DELETE"})
             .catch(error=>alert(error))
                 props.unfriend(props.id)
                 props.removeRequest(props.id)
@@ -47,7 +47,7 @@ const friend=props.friends.find(f=> f.my_friend_id==props.id)
     }
 
     const addFriendHandler=()=>{
-        fetch('http://localhost:3000/api/v1/requests',{
+        fetch('http://fisbum-backend.herokuapp.com/api/v1/requests',{
             method: 'POST',
             headers: {
                 accept: 'application/json',
@@ -90,9 +90,19 @@ const friend=props.friends.find(f=> f.my_friend_id==props.id)
    
     const renderNoResultText=()=>{
         return(
+            <View>
+                 <View
+                    style={{
+                        borderBottomColor: 'grey',
+                        borderBottomWidth: 1,
+                        marginBottom:10
+                    }}
+                    />
             <Text style={{alignSelf: 'center'}}>
+               
                 No user found!
             </Text>
+        </View>
         )
     }
         return (

@@ -28,18 +28,27 @@ const [modalSwitch, setModalSwitch]=useState(false)
 const renderBesties=()=>{
     let sortedFriends=props.currentUser.friends.sort((friendA, friendB)=>{
         if(friendA.friendship_score>friendB.friendship_score){
-            return 1
+            return -1
             
-        }else return -1
+        }else if(friendB.friendship_score>friendA.friendship_score) {
+            return 1
+        }
+        else return 0
+       
     })
     let count=0
-    return sortedFriends.map(friend=>{
+    let besties= sortedFriends.filter(friend=>{
         if(count<5){
-        let fr=props.currentUser.my_friends.find(fr=>fr.id==friend.my_friend_id)
         count++ 
-        return  <BestieCard key={fr.id} {...fr} />
+        return friend
         }  
     })
+    
+return  besties.map(b=>{
+    let fr=props.currentUser.my_friends.find(fr=>fr.id==b.my_friend_id)
+    
+    return  <BestieCard key={fr.id} {...fr} />
+})
 }
 
 const generateQrCode=()=>{

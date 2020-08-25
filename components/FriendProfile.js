@@ -22,14 +22,37 @@ const FriendProfile=props=>{
     const emailHandler=()=>{
         Linking.openURL(`mailto:${props.email}`)
     }
+    const getTimePassed=(updatedTime)=>{
+        let milliseconds=Date.now() - new Date(updatedTime)
+        let timePassed
+        let seconds = Math.round(milliseconds/1000)
+        let minutes=Math.round(milliseconds/(1000*60))
+        let hours=Math.round(minutes/60)
+        let days=Math.round(hours/24)
+        let weeks=Math.round(days/7)
+        let years=Math.round(weeks/52)
+        if(years>0){
+            timePassed=`${years} year${years>1 ? 's': ''}` 
+        }else if(weeks>0){
+            timePassed=`${weeks} week${weeks>1 ? 's': ''}`
+        }else if(days>0){
+            timePassed=`${days} day${days>1 ? 's': ''}`
+        }else if(hours>0){
+            timePassed=`${hours} hour${hours>1 ? 's': ''}`
+        }else if(minutes>0){
+            timePassed=`${minutes} minute${minutes>1 ? 's': ''}`
+        }else timePassed=`${seconds} second${seconds>1 ? 's': ''}`
+        return timePassed
+    }
+
 
     const unfriendHandler=()=>{
         // alert(`${friend.my_friend_id} =${props.id}`)
-        fetch(`http://localhost:3000/api/v1/friends/${friend.id}`, {method: "DELETE"})
+        fetch(`http://fisbum-backend.herokuapp.com/api/v1/friends/${friend.id}`, {method: "DELETE"})
          .catch(error=>alert(error))
         
         
-        fetch(`http://localhost:3000/api/v1/users/${props.id}`)
+        fetch(`http://fisbum-backend.herokuapp.com/api/v1/users/${props.id}`)
         .then(res=>res.json())
         .then(user=>{
             
@@ -37,7 +60,7 @@ const FriendProfile=props=>{
             const frd=user.friends.find(f=> f.my_friend_id==props.currentUser.id)
             
 
-            fetch(`http://localhost:3000/api/v1/friends/${frd.id}`, {method: "DELETE"})
+            fetch(`http://fisbum-backend.herokuapp.com/api/v1/friends/${frd.id}`, {method: "DELETE"})
             .catch(error=>alert(error))
         }
                 props.unfriend(props.id)
@@ -50,21 +73,21 @@ const FriendProfile=props=>{
         let score=props.friends.find(f=>f.my_friend_id==props.id).friendship_score
 
         if(score<100){
-            return  <Image style={{height: 30, width: 30}} source={require('../assets/icons8-bronze-ore-48.png')}/>
+            return  <Image style={{height: 20, width: 20}} source={require('../assets/icons8-bronze-ore-48.png')}/>
         } else if(score<1000){
-          return  <Image style={{height: 30, width: 30}} source={require('../assets/icons8-silver-ore-48.png')}/>
+          return  <Image style={{height: 20, width: 20}} source={require('../assets/icons8-silver-ore-48.png')}/>
         } else if(score<5000){
-            return <Image style={{height: 30, width: 30}} source={require('../assets/icons8-gold-ore-48.png')}/>
+            return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-gold-ore-48.png')}/>
         }else if(score<10000){
-            return <Image style={{height: 30, width: 30}} source={require('../assets/icons8-diamond-48.png')}/>
-        } else return <Image style={{height: 30, width: 30}} source={require('../assets/icons8-bronze-ore-48.png')}/> 
+            return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-diamond-48.png')}/>
+        } else return <Image style={{height: 20, width: 20}} source={require('../assets/icons8-bronze-ore-48.png')}/> 
     }
 
 
     const generateQrCode=()=>{
         return(
             <QRCode
-            value={`http://localhost:3000/api/v1/users/${props.id}`}
+            value={`http://fisbum-backend.herokuapp.com/api/v1/users/${props.id}`}
             size={340}
             logo={props.img_url}
             logoBorderRadius={10}
@@ -89,14 +112,17 @@ const FriendProfile=props=>{
                 <View style={styles.textView}>
                         
                     <Text>
-                        {props.first_name} {props.last_name}
+                        {props.first_name} {props.last_name} {props.sex==='female'
+                        ?<Icon name='female' style={{color: 'pink', fontSize:20}}/>
+                        : <Icon name='male' style={{color: 'blue', fontSize: 20}}/>}
                     </Text>
                     <Text note numberOfLines={3} >
                         {props.bio} 
                     </Text>
                     <Text>
-                    {props.fisbum_count}🤜
+                    {props.fisbum_count} 🤜 {imgUrl()}
                      </Text>
+                     <Text note>Fisbumer for {getTimePassed(props.created_at)}</Text>
                     </View>
             </View>
             <View style={styles.statusView}>
@@ -119,7 +145,6 @@ const FriendProfile=props=>{
                      <Text> Unfriend</Text>
                 </Button>
             </View>
-            {imgUrl()}
            <RenderMap id={props.id}/>
         </ScrollView>
     )
@@ -141,7 +166,7 @@ const styles=StyleSheet.create({
     }, 
     profilePicView: {
         marginLeft: 15, 
-        marginTop: -30,
+        marginTop: -25,
        
     },
     nameView:{
