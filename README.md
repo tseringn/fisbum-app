@@ -6,7 +6,7 @@ Social media mobile app that helps users to build and maintain relationships by 
 2. ```cd``` to main directory
 3. ```rails s``` to start server
 ### Frontend
-1. Clone the backend to local device
+1. Clone the frontend, this repo to local device
 2. ```cd``` to main directory
 3. ```Expo start``` to launch the app
 4. You can run the app on ```web```, ```andriod emulator```, ```IOS Emulator```, ```Android Device``` and ```IOS Device``` by following the instruction on the terminal
