@@ -27,7 +27,7 @@ As a user, I can:
 
 ## Final Product
 <div style='display: flex; justify-content: space-around; flex-wrap: warp; width: 100%;'>
-  <img width="405" alt="Screen Shot 2021-06-16 at 9 22 10 AM" src="https://user-images.githubusercontent.com/62776949/122231206-472df380-ce88-11eb-82ad-8cd390a70c84.png">
+  <img width="30%" alt="Screen Shot 2021-06-16 at 9 22 10 AM" src="https://user-images.githubusercontent.com/62776949/122231206-472df380-ce88-11eb-82ad-8cd390a70c84.png">
   <img width="412" alt="Screen Shot 2021-06-16 at 9 24 17 AM" src="https://user-images.githubusercontent.com/62776949/122231275-54e37900-ce88-11eb-8229-496fda4654ae.png">
   <img width="459" alt="Screen Shot 2021-06-16 at 9 25 16 AM" src="https://user-images.githubusercontent.com/62776949/122231294-590f9680-ce88-11eb-8c1e-22816c405890.png">
   <img width="410" alt="Screen Shot 2021-06-16 at 9 25 46 AM" src="https://user-images.githubusercontent.com/62776949/122231350-62006800-ce88-11eb-95e8-c9e13cad540a.png">
