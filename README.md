@@ -2,7 +2,7 @@
 Social media mobile app that helps users to build and maintain relationships by keeping record of how often they tap each other
 ## How to run the APP
 ### Backend
-1. Clone the backend to local device
+1. Clone the [backend](https://github.com/Calls4ever/fisbum-backend) to local device
 2. ```cd``` to main directory
 3. ```rails s``` to start server
 ### Frontend
@@ -11,7 +11,7 @@ Social media mobile app that helps users to build and maintain relationships by 
 3. ```Expo start``` to launch the app
 4. You can run the app on ```web```, ```andriod emulator```, ```IOS Emulator```, ```Android Device``` and ```IOS Device``` by following the instruction on the terminal
 
-## User Storys
+## User Stories
 As a user, I can:
 1. login with username or email adress and password
 2. update my status
